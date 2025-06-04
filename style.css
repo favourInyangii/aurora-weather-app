@@ -48,4 +48,24 @@
   .weather-card:hover {
     transform: scale(1.05);
   }
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  
+  .controls button {
+    background: gold;
+    color: black;
+    font-size: 1.5rem;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .controls button:hover {
+    background: #f1c40f;
+  }
   
