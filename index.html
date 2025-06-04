@@ -8,20 +8,23 @@
 
 </head>
 <body>
-    <div class="app-container">
-        <h1>Aurora Weather</h1>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Enter city name..." />
-            <button id="searchBtn">Search</button>
-          </div>
-        <div class="controls">
-            <button id="scrollLeft">←</button>
-            <button id="scrollRight">→</button>
+    <div class="container">
+        <h1>Aurora</h1>
+      
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Enter city..." />
+          <button id="searchBtn">Search</button>
         </div>
-        <div id="carousel" class="weather-carousel">
-            <!-- Weather cards will go here -->
-          </div>
-    </div>
+      
+        <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+      
+        <div class="carousel-container">
+          <button id="scrollLeft" class="scroll-btn">⏪</button>
+          <div id="carousel" class="carousel"></div>
+          <button id="scrollRight" class="scroll-btn">⏩</button>
+        </div>
+      </div>
+      
 
     <script src="script.js"></script>
 </body>

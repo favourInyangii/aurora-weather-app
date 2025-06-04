@@ -1,18 +1,20 @@
 const API_KEY = "f2aba9b8a55741b8258b3a5b70d21df5"; 
 const cities = ["London", "New York", "Tokyo", "Lagos", "Johannesburg"];
-
 const carousel = document.getElementById("carousel");
+const spinner = document.getElementById("loadingSpinner");
+const addedCities = new Set();
 
-// Function to fetch weather data for a city
+// Fetch weather data for a city
 async function getWeather(city) {
   const res = await fetch(
-   `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=1853b1fc6321872e9be7634aced1b1f7&units=metric`
+    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
   );
+  if (!res.ok) throw new Error("City not found");
   const data = await res.json();
   return data;
-}   
+}
 
-// Function to create a weather card
+// Create weather card element
 function createCard(weather) {
   const card = document.createElement("div");
   card.className = "weather-card";
@@ -25,32 +27,67 @@ function createCard(weather) {
   return card;
 }
 
-// Main function to load all cities
+// Load weather for initial cities
 async function loadWeather() {
+  spinner.style.display = "block"; // Show spinner
   for (let city of cities) {
     try {
-      const weather = await getWeather(city);
-      const card = createCard(weather);
-      carousel.appendChild(card);
+      const data = await getWeather(city);
+      if (!addedCities.has(data.name.toLowerCase())) {
+        const card = createCard(data);
+        carousel.appendChild(card);
+        addedCities.add(data.name.toLowerCase());
+      }
     } catch (err) {
-      console.error("Error loading weather for", city, err);
+      console.error("Error loading:", err.message);
     }
   }
+  spinner.style.display = "none"; // Hide spinner
 }
-// Add this below your existing loadWeather() function
-document.getElementById("scrollLeft").addEventListener("click", () => {
-    carousel.scrollBy({
-      left: -300,
-      behavior: "smooth"
-    });
-  });
-  
-  document.getElementById("scrollRight").addEventListener("click", () => {
-    carousel.scrollBy({
-      left: 300,
-      behavior: "smooth"
-    });
-  });
-  
 
+// Scroll carousel left and right buttons
+document.getElementById("scrollLeft").addEventListener("click", () => {
+  carousel.scrollBy({ left: -300, behavior: "smooth" });
+});
+document.getElementById("scrollRight").addEventListener("click", () => {
+  carousel.scrollBy({ left: 300, behavior: "smooth" });
+});
+
+// Search city and add weather card
+document.getElementById("searchBtn").addEventListener("click", async () => {
+  const input = document.getElementById("searchInput");
+  const city = input.value.trim();
+  if (!city) return;
+
+  if (addedCities.has(city.toLowerCase())) {
+    alert("City already added.");
+    input.value = "";
+    return;
+  }
+
+  spinner.style.display = "block";
+
+  try {
+    const weather = await getWeather(city);
+    const card = createCard(weather);
+    carousel.insertBefore(card, carousel.firstChild);
+    addedCities.add(weather.name.toLowerCase());
+    input.value = "";
+  } catch (err) {
+    alert("City not found. Please try another.");
+    console.error(err);
+  }
+
+  spinner.style.display = "none";
+});
+
+// Auto slide carousel every 3 seconds
+setInterval(() => {
+  carousel.scrollBy({ left: 300, behavior: "smooth" });
+  if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth) {
+    carousel.scrollTo({ left: 0, behavior: "smooth" });
+  }
+}, 3000);
+
+// Initial load
 loadWeather();
