@@ -6,14 +6,14 @@ const addedCities = new Set();
 
 // Fetch weather data for a city
 async function getWeather(city) {
-  const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
-  );
+  const res = await fetch(`http://localhost:5000/weather?city=${city}`);
+
+  
   if (!res.ok) throw new Error("City not found");
   const data = await res.json();
   return data;
 }
-
+ 
 // Create weather card element
 function createCard(weather) {
   const card = document.createElement("div");
